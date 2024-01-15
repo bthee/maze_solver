@@ -7,7 +7,7 @@ class Window:
         self.__height = height
         self.__root = Tk()
         self.__root.title("Maze Solver")
-        self.__canvas = Canvas(self.__root, width=self.__width, height=self.__height)
+        self.__canvas = Canvas(self.__root, width=self.__width, height=self.__height, bg="white")
         self.__canvas.pack(fill=BOTH)
         self.__running = False
         self.__root.protocol("WM_DELETE_WINDOW", self.close) 
@@ -57,18 +57,20 @@ class Cell:
         self._win = _win
 
     def draw(self):
-        if self.has_left_wall:
-            left_wall = Line(Point(self._x1, self._y1), Point(self._x1, self._y2))
-            self._win.draw_line(left_wall, "black")
-        if self.has_right_wall:
-            right_wall = Line(Point(self._x2, self._y1), Point(self._x2, self._y2))
-            self._win.draw_line(right_wall, "black")
-        if self.has_top_wall:
-            top_wall = Line(Point(self._x1, self._y1), Point(self._x2, self._y1))
-            self._win.draw_line(top_wall, "black")
-        if self.has_bottom_wall:
-            bottom_wall = Line(Point(self._x1, self._y2), Point(self._x2, self._y2))
-            self._win.draw_line(bottom_wall, "black")
+        wall_color = "black"
+        no_wall_color = "white"
+
+        left_wall = Line(Point(self._x1, self._y1), Point(self._x1, self._y2))
+        self._win.draw_line(left_wall, wall_color if self.has_left_wall else no_wall_color)
+
+        right_wall = Line(Point(self._x2, self._y1), Point(self._x2, self._y2))
+        self._win.draw_line(right_wall, wall_color if self.has_right_wall else no_wall_color)
+
+        top_wall = Line(Point(self._x1, self._y1), Point(self._x2, self._y1))
+        self._win.draw_line(top_wall, wall_color if self.has_top_wall else no_wall_color)
+
+        bottom_wall = Line(Point(self._x1, self._y2), Point(self._x2, self._y2))
+        self._win.draw_line(bottom_wall, wall_color if self.has_bottom_wall else no_wall_color)
 
     def draw_move(self, to_cell, undo=False):
         color = "gray" if undo else "red"
@@ -85,8 +87,8 @@ class Cell:
 
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None):
-        self.x1 = x1
-        self.y1 = y1
+        self.x1 = x1 + 50
+        self.y1 = y1 + 50
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.cell_size_x = cell_size_x
@@ -113,14 +115,23 @@ class Maze:
         self.win.redraw()
         time.sleep(0.05)
 
+    def _break_entrance_and_exit(self):
+        self._cells[0][0].has_top_wall = False
+        self._draw_cell(0, 0)
+
+        self._cells[-1][-1].has_bottom_wall = False
+        self._draw_cell(-1, -1)
+
 
 if __name__ == "__main__":
-    win = Window(800, 600)
+    win = Window(900, 700)
     maze = Maze(0, 0, 12, 16, 50, 50, win)
     maze._create_cells()
 
     for i in range(16):
         for j in range(12):
             maze._draw_cell(i, j)
+    
+    maze._break_entrance_and_exit()
 
     win.wait_for_close()
