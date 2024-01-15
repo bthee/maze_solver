@@ -1,4 +1,5 @@
 from tkinter import Tk, BOTH, Canvas
+import time
 
 class Window:
     def __init__(self, width, height):
@@ -82,11 +83,43 @@ class Cell:
         self._win.draw_line(move_line, color)
 
 
+class Maze:
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win):
+        self.x1 = x1
+        self.y1 = y1
+        self.num_rows = num_rows
+        self.num_cols = num_cols
+        self.cell_size_x = cell_size_x
+        self.cell_size_y = cell_size_y
+        self.win = win
+
+    def _create_cells(self):
+        self._cells = [[Cell(True, True, True, True,
+                     self.x1 + i * self.cell_size_x,
+                     self.y1 + j * self.cell_size_y,
+                     self.x1 + (i+1) * self.cell_size_x,
+                     self.y1 + (j+1) * self.cell_size_y,
+                     self.win)
+                for j in range(12)] 
+               for i in range(16)]
+    
+    def _draw_cell(self, i, j):
+        cell = self._cells[i][j]
+        cell.draw()
+        self._animate()
+
+    def _animate(self):
+        self.win.redraw()
+        time.sleep(0.05)
+
+
 if __name__ == "__main__":
     win = Window(800, 600)
-    c1 = Cell(True, True, True, True, 0, 0, 100, 100, win)
-    c1.draw()
-    c2 = Cell(True, True, True, True, 100, 0, 200, 100, win)
-    c2.draw()
-    c1.draw_move(c2)
+    maze = Maze(0, 0, 12, 16, 50, 50, win)
+    maze._create_cells()
+
+    for i in range(16):
+        for j in range(12):
+            maze._draw_cell(i, j)
+
     win.wait_for_close()
