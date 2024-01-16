@@ -141,7 +141,7 @@ class Maze:
             if j+1 < self.num_rows and not self._cells[i][j+1].visited:
                 to_visit.append((i, j+1))
             if not to_visit:
-                return
+                break
             
             next_i, next_j = random.choice(to_visit)
 
@@ -182,8 +182,8 @@ if __name__ == "__main__":
         for j in range(12):
             maze._draw_cell(i, j)
     
-    maze._break_entrance_and_exit()
     maze._break_walls_r(0, 0)
+    maze._break_entrance_and_exit()
 
     # red line to see when breakng finishes
     p1 = Point(75, 75)
