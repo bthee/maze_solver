@@ -164,19 +164,18 @@ class Maze:
             self._break_walls_r(next_i, next_j)
 
 
-
 if __name__ == "__main__":
     win = Window(900, 700)
     maze_rows = 12
     maze_cols = 16
-    maze = Maze(0, 0, maze_rows, maze_cols, 50, 50, win, seed=0)
+    maze = Maze(0, 0, maze_rows, maze_cols, 50, 50, win)
     maze._create_cells()
 
     for j in range(maze_cols):
         for i in range(maze_rows):
             maze._draw_cell(i, j)
     
-    maze._break_walls_r(0, 0)
+    maze._break_walls_r(0, maze_cols-1)
     maze._break_entrance_and_exit()
 
     # red line to see when breakng finishes
