@@ -86,7 +86,7 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-
+# i = cols, j = rows
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.x1 = x1 + 50
@@ -136,16 +136,16 @@ class Maze:
                 to_visit.append((i-1, j))
             if j > 0 and not self._cells[i][j-1].visited:
                 to_visit.append((i, j-1))
-            if j < self.num_rows-1 and not self._cells[i][j+1].visited:
-                to_visit.append((i, j+1))
-            if i < self.num_cols-1 and not self._cells[i+1][j].visited: 
+            if i+1 < self.num_cols and not self._cells[i+1][j].visited: 
                 to_visit.append((i+1, j))
+            if j+1 < self.num_rows and not self._cells[i][j+1].visited:
+                to_visit.append((i, j+1))
             if not to_visit:
                 return
             
             next_i, next_j = random.choice(to_visit)
 
-            if (0 < next_i < self.num_rows-1) and (0 < next_j < self.num_cols-1):
+            if (0 < next_i < self.num_cols-1) and (0 < next_j < self.num_rows-1):
                 if next_i > i:
                     current_cell.has_bottom_wall = False
                     self._cells[next_i][next_j].has_top_wall = False
