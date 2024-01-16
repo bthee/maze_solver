@@ -2,6 +2,7 @@ from tkinter import Tk, BOTH, Canvas
 import time
 import random
 
+# Maze Solver application window.
 class Window:
     def __init__(self, width, height):
         self.__width = width
@@ -29,13 +30,13 @@ class Window:
     def draw_line(self, line, fill_color):
         line.draw(self.__canvas, fill_color)
 
-
+# 2D point with x and y coordinates.
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-
+# Represents a line segment between two points with a draw method.
 class Line:
     def __init__(self, point_a, point_b):
         self.point_a = point_a
@@ -44,7 +45,7 @@ class Line:
     def draw(self, canvas, fill_color):
         canvas.create_line(self.point_a.x, self.point_a.y, self.point_b.x, self.point_b.y, fill=fill_color, width=2)
 
-
+# Represents a cell in the maze with walls and visualization methods.
 class Cell:
     def __init__(self, has_left_wall, has_right_wall, has_top_wall, has_bottom_wall, _x1, _y1, _x2, _y2, _win=None):
         self.has_left_wall = has_left_wall
@@ -86,7 +87,7 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-
+# Represents a maze with cells and methods for generating and visualizing it.
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.x1 = x1 + 50
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     maze._break_walls_r(0, maze_cols-1)
     maze._break_entrance_and_exit()
 
-    # red line to see when breakng finishes
+    # red line to indicate breaking is finished
     p1 = Point(75, 75)
     p2 = Point(125, 75)
     line = Line(p1, p2)
