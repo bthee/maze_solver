@@ -167,7 +167,7 @@ class Maze:
 
 if __name__ == "__main__":
     win = Window(900, 700)
-    maze = Maze(0, 0, 12, 16, 50, 50, win, seed=0)
+    maze = Maze(0, 0, 12, 16, 50, 50, win)
     maze._create_cells()
 
     for i in range(16):
@@ -176,5 +176,10 @@ if __name__ == "__main__":
     
     maze._break_entrance_and_exit()
     maze._break_walls_r(0, 0)
+
+    p1 = Point(75, 75)
+    p2 = Point(125, 75)
+    line = Line(p1, p2)
+    win.draw_line(line, "red")
 
     win.wait_for_close()
