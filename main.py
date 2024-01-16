@@ -86,7 +86,7 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-# i = cols/Spalten, j = rows/Reihen
+
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.x1 = x1 + 50
@@ -102,13 +102,13 @@ class Maze:
 
     def _create_cells(self):
         self._cells = [[Cell(True, True, True, True,
-                     self.x1 + i * self.cell_size_x,
-                     self.y1 + j * self.cell_size_y,
-                     self.x1 + (i+1) * self.cell_size_x,
-                     self.y1 + (j+1) * self.cell_size_y,
+                     self.x1 + j * self.cell_size_x,
+                     self.y1 + i * self.cell_size_y,
+                     self.x1 + (j+1) * self.cell_size_x,
+                     self.y1 + (i+1) * self.cell_size_y,
                      self.win)
-                for j in range(self.num_rows)] 
-               for i in range(self.num_cols)]
+                for j in range(self.num_cols)] 
+                for i in range(self.num_rows)]
     
     def _draw_cell(self, i, j):
         cell = self._cells[i][j]
@@ -136,10 +136,11 @@ class Maze:
                 to_visit.append((i-1, j))
             if j > 0 and not self._cells[i][j-1].visited:
                 to_visit.append((i, j-1))
-            if i+1 < self.num_cols and not self._cells[i+1][j].visited: 
+            if i+1 < self.num_rows and not self._cells[i+1][j].visited: 
                 to_visit.append((i+1, j))
-            if j+1 < self.num_rows and not self._cells[i][j+1].visited:
+            if j+1 < self.num_cols and not self._cells[i][j+1].visited:
                 to_visit.append((i, j+1))
+            
             if not to_visit:
                 break
             
@@ -158,15 +159,6 @@ class Maze:
                 current_cell.has_left_wall = False
                 self._cells[next_i][next_j].has_right_wall = False
 
-            if i == 0 and j != 0:
-                current_cell.has_left_wall = True
-            if j == 0 and i != 0:
-                current_cell.has_top_wall = True
-            if i == self.num_cols - 1 and j != self.num_rows - 1:
-                current_cell.has_right_wall = True
-            if j == self.num_rows - 1 and i != self.num_cols - 1:
-                current_cell.has_bottom_wall = True
-
             self._draw_cell(i, j)
             self._draw_cell(next_i, next_j)
             self._break_walls_r(next_i, next_j)
@@ -175,11 +167,13 @@ class Maze:
 
 if __name__ == "__main__":
     win = Window(900, 700)
-    maze = Maze(0, 0, 12, 16, 50, 50, win, seed=0)
+    maze_rows = 12
+    maze_cols = 16
+    maze = Maze(0, 0, maze_rows, maze_cols, 50, 50, win, seed=0)
     maze._create_cells()
 
-    for i in range(16):
-        for j in range(12):
+    for j in range(maze_cols):
+        for i in range(maze_rows):
             maze._draw_cell(i, j)
     
     maze._break_walls_r(0, 0)
