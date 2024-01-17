@@ -164,6 +164,11 @@ class Maze:
             self._draw_cell(next_i, next_j)
             self._break_walls_r(next_i, next_j)
 
+    def _reset_cells_visited(self):
+        for row in self._cells:
+            for cell in row:
+                cell.visited = False
+
 
 if __name__ == "__main__":
     win = Window(900, 700)
@@ -178,6 +183,7 @@ if __name__ == "__main__":
     
     maze._break_walls_r(0, maze_cols-1)
     maze._break_entrance_and_exit()
+    maze._reset_cells_visited()
 
     # red line to indicate breaking is finished
     p1 = Point(75, 75)
