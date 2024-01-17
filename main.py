@@ -87,7 +87,7 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-# Represents a maze with cells and methods for generating and visualizing it.
+# Represents a maze with cells and methods for generating, visualizing and solving the maze.
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.x1 = x1 + 50
