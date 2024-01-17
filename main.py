@@ -225,7 +225,7 @@ if __name__ == "__main__":
         for i in range(maze_rows):
             maze._draw_cell(i, j)
     
-    maze._break_walls_r(0, maze_cols-1)
+    maze._break_walls_r(0, maze_cols - 1)
     maze._break_entrance_and_exit()
     maze._reset_cells_visited()
 
