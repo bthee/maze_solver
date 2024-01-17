@@ -2,7 +2,7 @@ from tkinter import Tk, BOTH, Canvas
 import time
 import random
 
-# Maze Solver application window.
+
 class Window:
     def __init__(self, width, height):
         self.__width = width
@@ -30,13 +30,13 @@ class Window:
     def draw_line(self, line, fill_color):
         line.draw(self.__canvas, fill_color)
 
-# 2D point with x and y coordinates.
+
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-# Represents a line segment between two points with a draw method.
+
 class Line:
     def __init__(self, point_a, point_b):
         self.point_a = point_a
@@ -45,7 +45,7 @@ class Line:
     def draw(self, canvas, fill_color):
         canvas.create_line(self.point_a.x, self.point_a.y, self.point_b.x, self.point_b.y, fill=fill_color, width=2)
 
-# Represents a cell in the maze with walls and visualization methods.
+
 class Cell:
     def __init__(self, has_left_wall, has_right_wall, has_top_wall, has_bottom_wall, _x1, _y1, _x2, _y2, _win=None):
         self.has_left_wall = has_left_wall
@@ -87,11 +87,11 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-# Represents a maze with cells and methods for generating, visualizing and solving the maze.
+
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
-        self.x1 = x1 + 50
-        self.y1 = y1 + 50
+        self.x1 = x1
+        self.y1 = y1
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.cell_size_x = cell_size_x
@@ -160,7 +160,6 @@ class Maze:
                 current_cell.has_left_wall = False
                 self._cells[next_i][next_j].has_right_wall = False
 
-            self._draw_cell(i, j)
             self._draw_cell(next_i, next_j)
             self._break_walls_r(next_i, next_j)
 
@@ -176,6 +175,7 @@ class Maze:
         self._animate()
         current_cell = self._cells[i][j]
         current_cell.visited = True
+        
         if current_cell == self._cells[self.num_rows - 1][self.num_cols - 1]:
             return True
         
@@ -198,7 +198,7 @@ class Maze:
                 else:
                     current_cell.draw_move(next_cell, undo=True)
         return False
-
+    
     def _is_valid_move(self, current_cell, next_cell, direction):
         if direction == 'up':
             return not current_cell.has_top_wall and not next_cell.has_bottom_wall
@@ -212,9 +212,13 @@ class Maze:
 
 if __name__ == "__main__":
     win = Window(900, 700)
+    start_x = 50
+    start_y = 50
     maze_rows = 12
     maze_cols = 16
-    maze = Maze(0, 0, maze_rows, maze_cols, 50, 50, win)
+    cell_size_x = 50
+    cell_size_y = 50
+    maze = Maze(start_x, start_y, maze_rows, maze_cols, cell_size_x, cell_size_y, win)
     maze._create_cells()
 
     for j in range(maze_cols):
