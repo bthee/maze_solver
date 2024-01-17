@@ -169,6 +169,46 @@ class Maze:
             for cell in row:
                 cell.visited = False
 
+    def solve(self):
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, i, j):
+        self._animate()
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+        if current_cell == self._cells[self.num_rows - 1][self.num_cols - 1]:
+            return True
+        
+        directions = [
+            ((i, j+1), 'right'),
+            ((i-1, j), 'up'),
+            ((i+1, j), 'down'),
+            ((i, j-1), 'left')
+        ]
+
+        for (next_i, next_j), direction in directions:
+            if next_i < 0 or next_i >= self.num_rows or next_j < 0 or next_j >= self.num_cols:
+                continue
+            next_cell = self._cells[next_i][next_j]
+            if self._is_valid_move(current_cell, next_cell, direction) and not next_cell.visited:
+                current_cell.draw_move(next_cell)
+                if self._solve_r(next_i, next_j):
+                    next_cell.visited = True
+                    return True
+                else:
+                    current_cell.draw_move(next_cell, undo=True)
+        return False
+
+    def _is_valid_move(self, current_cell, next_cell, direction):
+        if direction == 'up':
+            return not current_cell.has_top_wall and not next_cell.has_bottom_wall
+        elif direction == 'down':
+            return not current_cell.has_bottom_wall and not next_cell.has_top_wall
+        elif direction == 'left':
+            return not current_cell.has_left_wall and not next_cell.has_right_wall
+        elif direction == 'right':
+            return not current_cell.has_right_wall and not next_cell.has_left_wall
+
 
 if __name__ == "__main__":
     win = Window(900, 700)
@@ -185,10 +225,6 @@ if __name__ == "__main__":
     maze._break_entrance_and_exit()
     maze._reset_cells_visited()
 
-    # red line to indicate breaking is finished
-    p1 = Point(75, 75)
-    p2 = Point(125, 75)
-    line = Line(p1, p2)
-    win.draw_line(line, "red")
-
+    maze.solve()
+    
     win.wait_for_close()
