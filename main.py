@@ -2,7 +2,7 @@ from tkinter import Tk, BOTH, Canvas
 import time
 import random
 
-
+# Represents the main application window using Tkinter
 class Window:
     def __init__(self, width, height):
         self.__width = width
@@ -15,10 +15,12 @@ class Window:
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
 
     def redraw(self):
+         # Updates the tkinter winndow to display changes
          self.__root.update_idletasks()
          self.__root.update()
 
     def wait_for_close(self):
+        # Keeps the application running, until the user closes it
         self.__running = True
         while self.__running:
             self.redraw()
@@ -30,22 +32,23 @@ class Window:
     def draw_line(self, line, fill_color):
         line.draw(self.__canvas, fill_color)
 
-
+# Represents a 2D point with x and y coordinates
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-
+# Represents a line segment between two 'Point' objects
 class Line:
     def __init__(self, point_a, point_b):
         self.point_a = point_a
         self.point_b = point_b
 
     def draw(self, canvas, fill_color):
+        # Draws the line on a canvas with a specific fill color
         canvas.create_line(self.point_a.x, self.point_a.y, self.point_b.x, self.point_b.y, fill=fill_color, width=2)
 
-
+# Represents a cell in the maze grid
 class Cell:
     def __init__(self, has_left_wall, has_right_wall, has_top_wall, has_bottom_wall, _x1, _y1, _x2, _y2, _win=None):
         self.has_left_wall = has_left_wall
@@ -60,6 +63,7 @@ class Cell:
         self.visited = False
 
     def draw(self):
+        # Draws the cell walls on the canvas based on its attributes
         wall_color = "black"
         no_wall_color = "white"
 
@@ -76,6 +80,7 @@ class Cell:
         self._win.draw_line(bottom_wall, wall_color if self.has_bottom_wall else no_wall_color)
 
     def draw_move(self, to_cell, undo=False):
+        # Draws a movement line between two cells
         color = "gray" if undo else "red"
 
         x1 = (self._x1 + self._x2) / 2
@@ -87,7 +92,7 @@ class Cell:
         move_line = Line(Point(x1, y1), Point(x2, y2))
         self._win.draw_line(move_line, color)
 
-
+# Represents the maze structure
 class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.x1 = x1
@@ -112,15 +117,18 @@ class Maze:
                 for i in range(self.num_rows)]
     
     def _draw_cell(self, i, j):
+        # Draws a cell on the canvas
         cell = self._cells[i][j]
         cell.draw()
         self._animate()
 
     def _animate(self):
+        # Pauses for a short time to create an animation effect
         self.win.redraw()
         time.sleep(0.05)
 
     def _break_entrance_and_exit(self):
+        # Removes walls to create an entrance and exit
         self._cells[0][0].has_top_wall = False
         self._draw_cell(0, 0)
 
@@ -128,6 +136,7 @@ class Maze:
         self._draw_cell(-1, -1)
 
     def _break_walls_r(self, i, j):
+        # Recursively breaks walls between cells during maze generation
         current_cell = self._cells[i][j]
         current_cell.visited = True
         while True:
@@ -164,14 +173,17 @@ class Maze:
             self._break_walls_r(next_i, next_j)
 
     def _reset_cells_visited(self):
+        # Resets the visited flag for all cells
         for row in self._cells:
             for cell in row:
                 cell.visited = False
 
     def solve(self):
+        # Initiates the maze-solving process
         return self._solve_r(0, 0)
 
     def _solve_r(self, i, j):
+        # Recursively solves the maze using depth-first search
         self._animate()
         current_cell = self._cells[i][j]
         current_cell.visited = True
@@ -208,7 +220,29 @@ class Maze:
             return not current_cell.has_left_wall and not next_cell.has_right_wall
         elif direction == 'right':
             return not current_cell.has_right_wall and not next_cell.has_left_wall
+        
+    def setup_and_solve(self, maze_rows, maze_cols):
+        self._create_cells()
 
+        for j in range(maze_cols):
+            for i in range(maze_rows):
+                self._draw_cell(i, j)
+        
+        start_row = random.randint(0, maze_rows - 1)
+        start_col = random.randint(0, maze_cols - 1)
+
+        self._break_walls_r(start_row, start_col)
+        self._break_entrance_and_exit()
+        self._reset_cells_visited()
+
+        self.solve()
+
+"""
+Creates a Window object and sets up initial parameters.
+Initializes a Maze object with specified dimensions and cell sizes.
+Draws all cells in the maze and breaks walls to generate the maze.
+Initiates the maze-solving process.
+"""
 
 if __name__ == "__main__":
     win = Window(900, 700)
@@ -219,16 +253,7 @@ if __name__ == "__main__":
     cell_size_x = 50
     cell_size_y = 50
     maze = Maze(start_x, start_y, maze_rows, maze_cols, cell_size_x, cell_size_y, win)
-    maze._create_cells()
 
-    for j in range(maze_cols):
-        for i in range(maze_rows):
-            maze._draw_cell(i, j)
-    
-    maze._break_walls_r(0, maze_cols - 1)
-    maze._break_entrance_and_exit()
-    maze._reset_cells_visited()
+    maze.setup_and_solve(maze_rows, maze_cols)
 
-    maze.solve()
-    
     win.wait_for_close()
