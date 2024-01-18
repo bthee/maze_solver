@@ -2,7 +2,7 @@
 This application visually generates and solves a maze.
 
 ## INSTALLATION
-Include instructions on how to install and run your project in a new environment.
+
 
 ## STRUCTURE
 The program is based on the following classes:
