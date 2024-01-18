@@ -221,7 +221,7 @@ class Maze:
         elif direction == 'right':
             return not current_cell.has_right_wall and not next_cell.has_left_wall
         
-    def setup_and_solve(self, maze_rows, maze_cols):
+    def setup_and_solve(self):
         self._create_cells()
 
         for j in range(maze_cols):
@@ -254,6 +254,6 @@ if __name__ == "__main__":
     cell_size_y = 50
     maze = Maze(start_x, start_y, maze_rows, maze_cols, cell_size_x, cell_size_y, win)
 
-    maze.setup_and_solve(maze_rows, maze_cols)
+    maze.setup_and_solve()
 
     win.wait_for_close()
