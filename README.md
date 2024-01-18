@@ -1,4 +1,3 @@
----
 # MAZE SOLVER
 This application visually generates and solves a maze.
 
@@ -20,4 +19,3 @@ Run the main.py file and it will create a maze utilizing the settings provided. 
 
 ## CUSTOMIZATION
 You can customize the size of the maze (rows and columns), the size of the cells, and the starting point of the maze generation by modifying the corresponding parameters in the main function.
----
