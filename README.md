@@ -7,7 +7,7 @@ This application visually generates and solves a maze.
 ## STRUCTURE
 The program is based on the following classes:
 
-Window: Represents the main application window using Tkinter.
+Window: Represents the main application window using Tkinter.\
 Point and Line: These classes are used to draw the outline of the maze. A Point is a 2D point with x and y coordinates, a Line is a line segment between two points.
 Cell: Represents a cell in the maze. Each cell knows whether it has walls on its sides.
 Maze: Represents the overall maze structure. It can generate a new maze and solve it.
